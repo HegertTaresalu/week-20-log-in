@@ -1,16 +1,33 @@
 require('dotenv').config();
-const express = require("express");
-const mongooae = require('mongoose');
+const express = require('express');
+// const mongoose = require('mongoose');
 const session = require('express-session');
-const passport = require('passport');
-const passportLocalMongoose = require('passport-local-mongoose')
+const passportLocalMongoose = require('passport-local-mongoose');
+const mainRoute = require("./routes/mainRoute");
+const ejs = require("ejs")
 
 const app = express();
-const port = 3000;
-app.listen(port,()=>{
-    console.log(`Server is runnin on port${port}`)
-})
 
-app.use(express.static("public"));
-app.set("view engine", "ejs");
-app.use(express.urlencoded({extended = true}));
+require("./models/db") // connect to DB
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({extended: true}));
+
+//initialize session
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
+//initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+const port = 3000;
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}.`);
+});
